@@ -1,1 +1,1 @@
-# storeCounter
+# store-counter
