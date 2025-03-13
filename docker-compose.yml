@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  store-counter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./uploads:/app/backend/uploads
+    environment:
+      - PORT=8080
+      - FLASK_ENV=production
+    restart: unless-stopped
+    
+  # Optional: Add database service if needed
+  # db:
+  #   image: postgres:13
+  #   environment:
+  #     - POSTGRES_USER=storecounter
+  #     - POSTGRES_PASSWORD=password
+  #     - POSTGRES_DB=storecounter
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+
+# volumes:
+#   postgres_data:
