@@ -7,15 +7,17 @@ import os
 import sys
 from flask import Flask, send_from_directory, request, jsonify
 import subprocess
+from flask_cors import CORS
 
 # Add backend directory to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'backend'))
 
-# Import backend Flask app
-from app import app as backend_app
+# Import backend Blueprint
+from backend.app import backend_app  # Changed to match the new name
 
 # Create the main application
 app = Flask(__name__, static_folder='frontend/build')
+CORS(app)  # Add CORS handling here
 
 # Mount the backend API at /api
 app.register_blueprint(backend_app, url_prefix='/api')

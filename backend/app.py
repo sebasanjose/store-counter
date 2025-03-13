@@ -1,13 +1,12 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask import Blueprint, request, jsonify
 import cv2
 import numpy as np
 import os
 import time
 from datetime import datetime
 
-app = Flask(__name__)
-CORS(app)
+# Create a Blueprint with a name that matches how it's used
+backend_app = Blueprint('backend', __name__)  # Changed from 'app' to 'backend_app'
 
 # Global variables to store video data
 video_data = {
@@ -52,7 +51,7 @@ def detect_people(frame):
         'keypoints': [(int(kp.pt[0]), int(kp.pt[1])) for kp in keypoints]
     }
 
-@app.route('/upload', methods=['POST'])
+@backend_app.route('/upload', methods=['POST'])
 def upload_video():
     if 'video' not in request.files:
         return jsonify({'error': 'No video file provided'}), 400
@@ -104,7 +103,7 @@ def upload_video():
         'total_people': total_people
     })
 
-@app.route('/webcam', methods=['POST'])
+@backend_app.route('/webcam', methods=['POST'])
 def process_webcam_frame():
     # Receive webcam frame as image data
     img_data = request.json.get('image')
@@ -132,7 +131,7 @@ def process_webcam_frame():
         'keypoints': results['keypoints']
     })
 
-@app.route('/data', methods=['GET'])
+@backend_app.route('/data', methods=['GET'])
 def get_data():
     # Get time position from query params
     time_pos = request.args.get('time_pos', type=int)
@@ -146,6 +145,3 @@ def get_data():
         'timeline_data': video_data['counts'],
         'total_count': sum(video_data['counts'][:time_pos+1])
     })
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)

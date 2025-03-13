@@ -41,14 +41,12 @@ RUN apt-get update && apt-get install -y \
 
 # Copy backend from backend stage
 COPY --from=backend /app/backend /app/backend
+# Copy Python packages from backend stage
+COPY --from=backend /usr/local/lib/python3.9/site-packages/ /usr/local/lib/python3.9/site-packages/
 # Copy frontend build from frontend stage
 COPY --from=frontend /app/frontend/build /app/frontend/build
 
-# Install Flask to serve frontend
-RUN pip install flask
-RUN pip install flask-cors
-
-# Create a simple server to serve both backend and frontend
+# No need to reinstall Flask as it's already copied from the backend stage
 COPY server.py .
 
 EXPOSE 8080
